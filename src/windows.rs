@@ -70,9 +70,8 @@ impl<'a> Keyring<'a> {
     }
 
     pub fn set_password(&self, password: &str) -> ::Result<()> {
-        let mut password = str_to_utf16(&password);
-        let password_bytes = password.as_mut_ptr() as *mut u8;
-        let password_len = (password.len() as u32) * 2;
+        let password_bytes = password.as_ptr() as *mut u8;
+        let password_len = password.len() as u32;
 
         let mut key = self.make_key();
 
@@ -133,7 +132,7 @@ impl<'a> Keyring<'a> {
     }
 
     fn make_key(&self) -> Vec<u16> {
-        let key = format!("{}\\{}", self.service, self.username);
+        let key = format!("{}|{}", self.service, self.username);
         str_to_utf16(&key)
     }
 }
